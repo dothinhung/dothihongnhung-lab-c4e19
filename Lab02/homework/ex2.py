@@ -25,5 +25,6 @@ for tr in tr_list:
         post['Quý 2-2017'] = td[3].string
         post['Quý 3-2017'] = td[4].string
     posts.append(post)
+        
 
 pyexcel.save_as(records = posts, dest_file_name = "cafe.xlsx")
