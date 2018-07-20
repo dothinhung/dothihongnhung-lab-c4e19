@@ -1,21 +1,29 @@
-from urllib.request import urlopen, urlretrieve
+from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import pyexcel
 
+# 1. Download webpage
+url = "http://s.cafef.vn/bao-cao-tai-chinh/VNM/IncSta/2017/3/0/0/ket-qua-hoat-dong-kinh-doanh-cong-ty-co-phan-sua-viet-nam.chn"
+html = urlopen(url).read().decode("utf-8")
 
-# Download webpage
-url = 'http://s.cafef.vn/bao-cao-tai-chinh/VNM/IncSta/2018/1/0/0/ket-qua-hoat-dong-kinh-doanh-cong-ty-co-phan-sua-viet-nam.chn'
-html_content = urlopen(url).read().decode("utf-8")
-
-# 2. Extract ROI (region of interest) 
-# html, xml, xhtml
-soup = BeautifulSoup(html_content, "html.parser")
-table = soup.find("table", id="tableContent")
+# 2. Extract ROI 
+soup = BeautifulSoup(html, "html.parser")
+table = soup.find("table", id = "tableContent")
 
 # 3. Extract information
-list_tr = table.find_all("tr")
-# print(list_tr)
+tr_list = table.find_all("tr")
 
-for tr in list_tr:
-    list_td = tr.find_all("td")
-    print(len(list_td))
+posts = []
+
+for tr in tr_list:
+    post = {}
+    td = tr.find_all("td")
+    for i in range(len(td)):
+        post['<Trước  Sau'] = td[0].string
+        post['Quý 4-2016'] = td[1].string
+        post['Quý 1-2017'] = td[2].string
+        post['Quý 2-2017'] = td[3].string
+        post['Quý 3-2017'] = td[4].string
+    posts.append(post)
+
+pyexcel.save_as(records = posts, dest_file_name = "cafe.xlsx")
